@@ -33,10 +33,16 @@ function App() {
   ];
 
   const fetchVideos = async () => {
-    const res = await fetch("http://127.0.0.1:8000/videos");
+  try {
+    const res = await fetch("https://mindtech-backend.onrender.com/videos");
     const data = await res.json();
+
     setVideos([...demoVideos, ...data]);
-  };
+  } catch (error) {
+    console.log("Backend failed, showing demo only");
+    setVideos(demoVideos);
+  }
+};
 
   useEffect(() => {
     fetchVideos();
@@ -55,7 +61,7 @@ function App() {
     formData.append("file", file);
     formData.append("thumbnail", thumbnail);
 
-    await fetch("http://127.0.0.1:8000/upload", {
+    await fetch("https://mindtech-backend.onrender.com/upload", {
       method: "POST",
       body: formData,
     });
@@ -65,7 +71,7 @@ function App() {
   };
 
   const deleteVideo = async (id: number) => {
-    await fetch(`http://127.0.0.1:8000/delete/${id}`, {
+    await fetch(`https://mindtech-backend.onrender.com/delete/${id}`, {
       method: "DELETE",
     });
     fetchVideos();
