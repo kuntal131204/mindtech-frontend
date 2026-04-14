@@ -50,25 +50,42 @@ function App() {
 
   // 📤 UPLOAD
   const uploadVideo = async () => {
-    if (!file || !thumbnail || title === "") {
-      alert("Enter title + video + thumbnail");
-      return;
-    }
+  if (!file || !thumbnail || title === "") {
+    alert("Enter title + video + thumbnail");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("subject", subject);
-    formData.append("file", file);
-    formData.append("thumbnail", thumbnail);
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("subject", subject);
+  formData.append("file", file);
+  formData.append("thumbnail", thumbnail);
 
-    await fetch("https://mindtech-backend.onrender.com/upload", {
+  try {
+    const res = await fetch("https://mindtech-backend.onrender.com/upload", {
       method: "POST",
       body: formData,
     });
 
-    alert("Uploaded");
+    const data = await res.json();
+
+    console.log("UPLOAD RESPONSE:", data);
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    alert("Uploaded successfully ✅");
+
+    // refresh list
     fetchVideos();
-  };
+
+  } catch (err) {
+    console.error("UPLOAD ERROR:", err);
+    alert("Upload failed ❌");
+  }
+};
 
   const deleteVideo = async (id: number) => {
     await fetch(`https://mindtech-backend.onrender.com/delete/${id}`, {
